@@ -1,36 +1,11 @@
-# Processo ETL com Python e MySQL
-
-Para realizar o processo de ETL (Extract, Transform, Load) com seus arquivos CSV no MySQL, você pode usar Python com a biblioteca `pandas` para extrair e transformar os dados, e depois carregar esses dados no MySQL.
-
-## Passos do Processo ETL
-
-1. **Extrair os dados dos arquivos CSV**
-2. **Transformar os dados**
-3. **Carregar os dados no MySQL**
-
-## Pré-requisitos
-
-- Python instalado
-- Bibliotecas `pandas` e `mysql-connector-python` instaladas
-- Um servidor MySQL em execução
-
-## 1. Extrair os dados dos arquivos CSV
-
-Crie um script Python para carregar os dados dos arquivos CSV usando `pandas`.
-
-```python
 import pandas as pd
+import mysql.connector
 
 # Extrair dados dos arquivos CSV
-heroes_df = pd.read_csv('csv/heroes.csv')
-hero_stats_df = pd.read_csv('csv/hero_stats.csv')
-```
+heroes_df = pd.read_csv('path_to_csv/heroes.csv')
+hero_stats_df = pd.read_csv('path_to_csv/hero_stats.csv')
 
-## 2. Transformar os dados
-Transforme os dados conforme necessário. Neste caso, vamos simplificar as transformações.
-
-```python
-# Transformar os dados
+# Transformar os dados, se necessário
 # Exemplo: Renomear colunas para consistência
 heroes_df.columns = ['Hero_ID', 'Hero_Name']
 hero_stats_df.columns = [
@@ -41,19 +16,13 @@ hero_stats_df.columns = [
 
 # Mapear herói pelo nome para obter o Hero_ID
 hero_stats_df = hero_stats_df.merge(heroes_df, left_on='Name', right_on='Hero_Name')
-```
-
-## 3. Carregar os dados no MySQL
-Configure a conexão MySQL e carregue os dados nas tabelas.
-```python
-import mysql.connector
 
 # Conectar ao MySQL
 conn = mysql.connector.connect(
-    host='127.0.0.1',
-    user='root',
-    password='123',
-    database='conexaodbmysql'
+    host='localhost',  # Ou use '127.0.0.1'
+    user='root',       # Usuário do MySQL
+    password='my-secret-pw',  # Senha do MySQL definida no contêiner
+    database='conexaodbmysql' # Nome do banco de dados
 )
 cursor = conn.cursor()
 
@@ -147,5 +116,3 @@ for _, row in hero_stats_df.iterrows():
 conn.commit()
 cursor.close()
 conn.close()
-
-```   
